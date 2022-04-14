@@ -1,5 +1,8 @@
 import { Modal, Button } from "antd";
 import React, { useState, useEffect } from "react";
+import { useMachine } from "@xstate/react";
+import playerMachine from "../machineXstate/playerMachine";
+import Player from "./Player";
 
 /**
  *
@@ -7,59 +10,51 @@ import React, { useState, useEffect } from "react";
  * @returns
  */
 const ModalElement = (props) => {
-  const [loading, setLoading] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [playVideo, setPlayVideo] = useState(false);
+  const changePlayVideoState = (bool) => () => setPlayVideo(bool);
 
-  const showModal = () => {
-    setVisible(true);
-  };
+  const [state, send] = useMachine(playerMachine, {
+    actions: {
+      pauseVideo: changePlayVideoState(false),
+      playVideo: changePlayVideoState(true),
+    },
+  });
+  const close = state.matches("page");
+  const { mini } = state.context;
 
-  const handleOk = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setVisible(true);
-    }, 3000);
-  };
-
-  const handleCancel = () => {
-    setVisible(false);
-  };
+  const setSendMachine = (stateString) => () => send(stateString);
+  const additSettings = {};
+  if (mini) additSettings.width = 300;
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary" onClick={setSendMachine("toggle")}>
         Open Modal with customized footer
       </Button>
       <Modal
-        visible={visible}
+        visible={!close}
         title="Title"
-        onOk={handleOk}
-        onCancel={handleCancel}
+        onCancel={setSendMachine("toggle")}
         footer={[
-          <Button key="back" onClick={handleCancel}>
-            Return
+          <Button onClick={changePlayVideoState(!playVideo)}>Return</Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={setSendMachine("toggleMini")}
+          >
+            mini
           </Button>,
           <Button
             key="submit"
             type="primary"
-            loading={loading}
-            onClick={handleOk}
+            onClick={changePlayVideoState(!playVideo)}
           >
-            Submit
-          </Button>,
-          <Button
-            key="link"
-            href="https://google.com"
-            type="primary"
-            loading={loading}
-            onClick={handleOk}
-          >
-            Search on Google
+            Play
           </Button>,
         ]}
+        {...additSettings}
       >
-        {props.children}
+        <Player play={playVideo} />
       </Modal>
     </>
   );

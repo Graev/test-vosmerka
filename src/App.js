@@ -7,9 +7,7 @@ function App() {
   return (
     <div>
       <div className="player__placeholder">
-        <ModalElement>
-          <Player />
-        </ModalElement>
+        <ModalElement></ModalElement>
       </div>
     </div>
   );
