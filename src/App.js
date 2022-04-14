@@ -1,14 +1,11 @@
 import "antd/dist/antd.css";
 import "./App.css";
-import ModalElement from "./comp/Modal";
-import Player from "./comp/Player";
+import PlayerInModal from "./comp/PlayerInModal";
 
 function App() {
   return (
-    <div>
-      <div className="player__placeholder">
-        <ModalElement></ModalElement>
-      </div>
+    <div className="app">
+      <PlayerInModal></PlayerInModal>
     </div>
   );
 }

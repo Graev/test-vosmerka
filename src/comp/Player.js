@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { Spin } from "antd";
 
-const videoLink =
-  "https://cdn.flowplayer.com/d9cd469f-14fc-4b7b-a7f6-ccbfa755dcb8/hls/383f752a-cbd1-4691-a73f-a4e583391b3d/playlist.m3u8";
+/**
+ * @typedef {object} VideoPlayerProps
+ * @property {string} videoLink
+ * @property {boolean} play
+ */
 
+/**
+ *
+ * @description player
+ * @param {import('react').ProviderProps & VideoPlayerProps} props
+ * @returns {JSX.Element}
+ *
+ */
 const Player = (props) => {
   const [playerReady, setPlayerReady] = useState(false);
 
@@ -12,7 +22,7 @@ const Player = (props) => {
     <>
       <Spin spinning={!playerReady}>
         <ReactPlayer
-          url={videoLink}
+          url={props.videoLink}
           width="100%"
           height="auto"
           playing={props.play}
