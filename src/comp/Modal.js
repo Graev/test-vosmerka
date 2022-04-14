@@ -1,4 +1,10 @@
 import { Modal, Button } from "antd";
+import {
+  CaretRightOutlined,
+  CompressOutlined,
+  ExpandOutlined,
+  PlayCircleOutlined,
+} from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
 import { useMachine } from "@xstate/react";
 import playerMachine from "../machineXstate/playerMachine";
@@ -9,6 +15,11 @@ import Player from "./Player";
  * @param {import('react').ProviderProps} props
  * @returns
  */
+
+const ICONS_STYLE = {
+  fontSize: "24px",
+};
+
 const ModalElement = (props) => {
   const [playVideo, setPlayVideo] = useState(false);
   const changePlayVideoState = (bool) => () => setPlayVideo(bool);
@@ -28,30 +39,36 @@ const ModalElement = (props) => {
 
   return (
     <>
-      <Button type="primary" onClick={setSendMachine("toggle")}>
-        Open Modal with customized footer
-      </Button>
+      <div className="player-placeholder" onClick={setSendMachine("toggle")}>
+        <CaretRightOutlined style={{ fontSize: "40px" }} />
+      </div>
       <Modal
         visible={!close}
         title="Title"
         onCancel={setSendMachine("toggle")}
         footer={[
-          <Button onClick={changePlayVideoState(!playVideo)}>Return</Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={setSendMachine("toggleMini")}
-          >
-            mini
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
+          //Разные иконки, в зависимости от размера окна
+          mini ? (
+            <ExpandOutlined
+              key="modal"
+              onClick={setSendMachine("toggleMini")}
+              style={ICONS_STYLE}
+            />
+          ) : (
+            <CompressOutlined
+              key="mini"
+              onClick={setSendMachine("toggleMini")}
+              style={ICONS_STYLE}
+            />
+          ),
+          //Кнопка play/pause
+          <PlayCircleOutlined
+            key="play"
             onClick={changePlayVideoState(!playVideo)}
-          >
-            Play
-          </Button>,
+            style={{ ...ICONS_STYLE, marginLeft: "10px" }}
+          />,
         ]}
+        //Данные с шириной, при изменении размера попап
         {...additSettings}
       >
         <Player play={playVideo} />
